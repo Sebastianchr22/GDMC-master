@@ -7,6 +7,7 @@ walkable_blocks = [1, 2, 3, 4, 5, 12, 13]
 wool_floor= 171
 wool_floor_level = 0
 water_block_id = 9
+cobblestone_id = 4
 
 def perform(level, box, options):
     floor_blocks = get_floor_blocks(level, box)
@@ -21,23 +22,33 @@ def perform(level, box, options):
     road_end = find_road_point(level, floor_blocks, (len(floor_blocks) - (len(floor_blocks) / 10), len(floor_blocks)))
     mark_road_end(level, road_end)
 
-    main_road = build_road_astar(level, road_origin, road_end, floor_blocks)
-    pave_road(level, main_road)
+    road_blocks = build_road_astar(level, road_origin, road_end, floor_blocks)
+    pave_road(level, road_blocks)
     
-    for x in range(0,8):
-        floor_blocks = get_floor_blocks(level, box)
-        create_road_branch(level, main_road, floor_blocks)
+    for x in range(0,10):
+        floor_without_road = get_floor_without_roads(level, floor_blocks)
+        road_blocks += create_road_branch(level, road_blocks, floor_blocks)
     #build_tent(level, floor_blocks[0])
+    floor_without_road = get_floor_without_roads(level, floor_blocks)
+    mark_floor_blocks(level, floor_without_road)
 
 def create_road_branch(level, path, floor_blocks):
     rand_point_on_road = path[rand.randrange(0, len(path))]
     rand_target_point = floor_blocks[rand.randrange(0, len(floor_blocks))]
     side_path = build_road_astar(level, rand_point_on_road, rand_target_point , floor_blocks)
     pave_road(level, side_path)
+    return side_path
 
 def pave_road(level, path):
     for block in path:
-        set_block_with_level(level, block[0], block[1], block[2], 4, 0)
+        set_block_with_level(level, block[0], block[1], block[2], cobblestone_id, 0)
+
+def get_floor_without_roads(level, floor_blocks):
+    ar = []
+    for block in floor_blocks:
+        if level.blockAt(block[0], block[1], block[2]) != cobblestone_id:
+            ar.append(block)
+    return ar
 
 #Will return an array of tuples representing all blocks that are walkable from the selection
 def get_floor_blocks(level, box):

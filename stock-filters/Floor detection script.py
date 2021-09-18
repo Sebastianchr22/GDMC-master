@@ -3,9 +3,10 @@ from mcplatform import *
 import random as rand
 
 floor_blocks = []
-walkable_blocks = [1,2,3,4,5,12,13]
+walkable_blocks = [1, 2, 3, 4, 5, 12, 13]
 wool_floor= 171
 wool_floor_level = 0
+water_block_id = 9
 
 def perform(level, box, options):
     floor_blocks = get_floor_blocks(level, box)
@@ -14,18 +15,29 @@ def perform(level, box, options):
 
     #mark_floor_blocks(level, floor_blocks)
 
-    road_origin = find_road_origin(floor_blocks)
+    road_origin = find_road_point(level, floor_blocks, (0, len(floor_blocks) / 10))
     mark_road_origin(level, road_origin)
 
-    road_end = find_road_end(floor_blocks)
+    road_end = find_road_point(level, floor_blocks, (len(floor_blocks) - (len(floor_blocks) / 10), len(floor_blocks)))
     mark_road_end(level, road_end)
 
-    path = build_road_astar(level, road_origin, road_end, floor_blocks)
-    print "Finished pathfinding"
+    main_road = build_road_astar(level, road_origin, road_end, floor_blocks)
+    pave_road(level, main_road)
+    
+    for x in range(0,8):
+        floor_blocks = get_floor_blocks(level, box)
+        create_road_branch(level, main_road, floor_blocks)
+    #build_tent(level, floor_blocks[0])
+
+def create_road_branch(level, path, floor_blocks):
+    rand_point_on_road = path[rand.randrange(0, len(path))]
+    rand_target_point = floor_blocks[rand.randrange(0, len(floor_blocks))]
+    side_path = build_road_astar(level, rand_point_on_road, rand_target_point , floor_blocks)
+    pave_road(level, side_path)
+
+def pave_road(level, path):
     for block in path:
         set_block_with_level(level, block[0], block[1], block[2], 4, 0)
-
-    #build_tent(level, floor_blocks[0])
 
 #Will return an array of tuples representing all blocks that are walkable from the selection
 def get_floor_blocks(level, box):
@@ -34,8 +46,10 @@ def get_floor_blocks(level, box):
     for z in range(box.minz, box.maxz):
         for y in range(box.miny, box.maxy):
             for x in range(box.minx, box.maxx):
-                if (level.blockAt(x, y, z) in walkable_blocks) and (level.blockAt(x, y + 1, z) == 0):
+                block = level.blockAt(x, y, z)
+                if block in walkable_blocks and level.blockAt(x, y + 1, z) == 0:
                     ar.append((x,y,z))
+
     return ar
 
 #Will place marking tiles on the entire array of blocks (floor)
@@ -44,16 +58,17 @@ def mark_floor_blocks(level, blocks):
         y = block[1] + 1 #Places carpet on top of the floor block
         set_block_with_level(level, block[0], y, block[2], wool_floor, wool_floor_level)
 
-def find_road_origin(floor_blocks):
-    return floor_blocks[rand.randrange(0, len(floor_blocks) / 10)] #picks a random block from the first 10% of the floor blocks
+def find_road_point(level, floor_blocks, range):
+    r = rand.randrange(range[0], range[1])
+    bl = floor_blocks[r]
+    while level.blockAt(bl[0], bl[1], bl[2]) not in walkable_blocks:
+        r = rand.randrange(range[0], range[1])
+        bl = floor_blocks[r]
+    return bl
 
 #Indicates the road origin with yellow wool
 def mark_road_origin(level, origin):
     set_block_with_level(level, origin[0], origin[1] + 1, origin[2], wool_floor, 4)
-
-
-def find_road_end(floor_blocks):
-    return floor_blocks[rand.randrange(len(floor_blocks) - (len(floor_blocks) / 10), len(floor_blocks))] #picks a random block from the first 10% of the floor blocks
 
 #Indicates the road end with red wool
 def mark_road_end(level, end):
@@ -84,16 +99,14 @@ def step_size(point1, point2):
 
 #Returns the path from road_origin to road_end
 def build_road_astar(level, road_origin, road_end, floor_blocks):
-    moves = [(1,0,0), (-1,0,0), (0,0,1), (0,0,-1), (1,1,0), (-1,1,0), (0,1,1), (0,1,-1), (1,-1,0), (-1,-1,0), (0,-1,1), (0,-1,-1)]
+    last_node = road_origin
     open_nodes = []
     closed_nodes = []
     open_nodes.append(Path_node(None, road_origin, 0, step_size(road_origin, road_end)))
-    while len(open_nodes) >= 1:
-        print "starting new loop with ", len(open_nodes), " open nodes"
+    while len(open_nodes) > 0:
         node_current = get_lowest_f(open_nodes)
-
+        #print "Current f = ", node_current.get_f()
         if node_current.get_location() is road_end:
-            print "WOW! Found the end!"
             path = []
             current = node_current
             while current is not None:
@@ -101,28 +114,24 @@ def build_road_astar(level, road_origin, road_end, floor_blocks):
                 current = current.parent
             return path
         else:
-            print "Not found end yet"
             #index = floor_blocks.index(node_current.get_location())
-            neighbours = []
-            for move in moves:
-                cl = node_current.get_location()
-                nl = (cl[0] + move[0], cl[1] + move[1], cl[2] + move[2])
-                if nl in floor_blocks:
-                    neighbours.append(nl)
-
-            print "block had ", len(neighbours) , " neighbours"
-            for block in neighbours: #Consider generating new positions (moves) adding them to current location, then checking if that pos is in floor_blocks
-                print "step size: ", step_size(node_current.get_location(), block)
-                if step_size(node_current.get_location(), block) == 1:
-                    new_node = Path_node(node_current, block, node_current.get_f() + step_size(node_current.get_location(), block), step_size(block, road_end))
-                    if not node_in_list(new_node, open_nodes) and not node_in_list(new_node, closed_nodes):
+            for blocks in floor_blocks: #Consider generating new positions (moves) adding them to current location, then checking if that pos is in floor_blocks
+                #print "step size: ", step_size(node_current.get_location(), blocks)
+                if step_size(node_current.get_location(), blocks) == 1:
+                    new_node = Path_node(node_current, blocks, node_current.get_f() + step_size(node_current.get_location(), blocks), step_size(blocks, road_end))
+                    if not in_list(new_node, open_nodes) and not in_list(new_node, closed_nodes):
                         open_nodes.append(new_node)
-
-            print "Cleaning up after loop"            
+            last_node = node_current          
             open_nodes.remove(node_current)
             closed_nodes.append(node_current)
+    print "Error: path could not be established to target point. Returning backup path."
+    backup_path = []
+    while last_node is not None:
+        backup_path.append(last_node.get_location())
+        last_node = last_node.parent
+    return backup_path
     
-def node_in_list(node, list):
+def in_list(node, list):
     for elm in list:
         if elm.is_equal_to(node):
             return True
@@ -135,11 +144,6 @@ def get_lowest_f(open_nodes):
             if node.get_f() <= lowest.get_f():
                 lowest = node
     return lowest
-
-
-            
-def place_road(level, block_pos):
-    set_block_with_level(level, block_pos[0], block_pos[1], block_pos[2], 4, 0)
 
 
 

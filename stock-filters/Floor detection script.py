@@ -3,7 +3,7 @@ from mcplatform import *
 import random as rand
 
 floor_blocks = []
-walkable_blocks = [1, 2, 3, 4, 5, 12, 13]
+walkable_blocks = [1, 2, 3, 5, 12, 13]
 wool_floor= 171
 wool_floor_level = 0
 water_block_id = 9

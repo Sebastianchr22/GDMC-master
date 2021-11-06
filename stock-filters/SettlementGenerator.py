@@ -8,8 +8,7 @@ import FloorHandler #For all functions related to the flooring of the selected b
 import RoadHandler #For all functions related to the road, generation, sideshoots, and point selection
 import Builder
 import ImperfectSpaceSegmenter as ISSeg
-import SquareSegmenter as SSeg
-import GridSegmenter as GSeg
+import SquareSegmenter as GridSeg
 
 floor_blocks = []
 
@@ -33,7 +32,17 @@ def perform(level, box, options):
             largest_segment = child
     print "Largest child segment found has a size of ", len(largest_segment.get_content()), " blocks"
 
+    #Clear trees above:
+    for block in largest_segment.get_content():
+        for y in range(block[1] +1, box.maxy):
+            Builder.set_block_with_level(level, block[0], y, block[2], 0, 0)
+    
 
+    #index = 0
+    #for segment in segments_root.get_children():
+    #    for block in segment.get_content():
+    #        Builder.set_block_with_level(level, block[0], block[1], block[2], 35, index % 15)
+    #    index += 1
     #Creating road within the largest segment of the partitioned space 
     #road_origin = RoadHandler.find_road_point(level, largest_segment.get_content(), (0, len(largest_segment.get_content()) / 10))
     #FloorHandler.mark_road_origin(level, road_origin)
@@ -50,20 +59,11 @@ def perform(level, box, options):
     #floor_without_road = FloorHandler.get_floor_without_roads(level, largest_segment.get_content())
     
 
-    #Segments the settlement area again, taking the now generated roads into account.
-    #Segments are thus now walkable blocks connected not including the road.
-    #segments_root = ISSeg.get_segments(floor_blocks)
-
-    print "Segmentation found ", len(largest_segment.get_children()), " segments of walkable blocks"
-    for block in largest_segment.get_content():
-        Builder.set_block_with_level(level, block[0], block[1] + 1, block[2], 35, 0)
-
-
-    segment_grid = GSeg.get_grid(largest_segment.get_content())
+    segment_grid = GridSeg.get_grid(largest_segment.get_content())
     index = 0
-    for cell in segment_grid:
-        for block in cell:
-            Builder.set_block_with_level(level, block[0], block[1] + 5, block[2], 35, index % 15)
+    for cube in segment_grid:
+        for block in cube.get_chunk():
+            Builder.set_block_with_level(level, block[0], block[1], block[2], 35, index % 15)
         index+=1
 
     #Build houses are return all blocks not containing a house

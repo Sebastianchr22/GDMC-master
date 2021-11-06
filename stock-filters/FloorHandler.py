@@ -11,7 +11,6 @@ plants = [6, 31, 32, 37, 38, 39, 40, 175]
 
 wool_floor = Builder.get_floor_block_id()
 
-xz_blocks = {}
 
 def get_floor_without_roads(level, floor_blocks):
     initial_time = time.time()
@@ -31,13 +30,12 @@ def get_floor_blocks(level, box):
     ### Consider a way to select axis in terms of total length (Outer loop -> more important axis)
     for x in range(box.minx, box.maxx):
         for z in range(box.minz, box.maxz):
-            if (x, z) not in xz_blocks.keys(): #Not already found
-                for y in range(box.maxy, box.miny, -1):
-                    block = level.blockAt(x, y, z)
-                    block_above = level.blockAt(x, y + 1, z)
-                    if block in walkable_blocks and (block_above == 0 or block_above in plants):
-                        xz_blocks[(x, z)] = 1
-                        ar.append((x,y,z))
+            for y in range(box.maxy, box.miny, -1):
+                block = level.blockAt(x, y, z)
+                block_above = level.blockAt(x, y + 1, z)
+                if block in walkable_blocks and (block_above == 0 or block_above in plants):
+                    ar.append((x,y,z))
+                    break
     
     ###For performance evaluation:
     elapsed_time = time.time() - initial_time

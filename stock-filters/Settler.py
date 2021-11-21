@@ -88,7 +88,7 @@ class Settler:
         #Random chance of concent
         if rand.randrange(0,2) > 0.5:
             mate.origin = self.origin #Mate moves in :D
-            children_num = int(rand.normalvariate(1.5, 1)) #Exclusive range
+            children_num = abs(int(rand.normalvariate(2, 1))) #Exclusive range
             for child in range(0, children_num):
                 self._mate(mate)
             self.steps_left = 0

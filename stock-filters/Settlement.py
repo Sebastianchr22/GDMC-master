@@ -14,7 +14,6 @@ class Settlement:
             self.create_new_settler()
 
     def step(self):
-        print("Simulating ", len(self.settlers), " settlers for this step")
         for settler in self.settlers:
             if settler.steps_left > 0:
                 settler.step()

@@ -67,7 +67,6 @@ class Settler:
             c = seg.get_chunk()
             for block in c:
                 if block[0] == loc[0] and block[2] == loc[1]:
-                    print "Moved from ", self.origin, " to ", self.world_grid.index(seg)
                     self.origin = self.world_grid.index(seg)
                     seg.add_settler(self)
                     break
@@ -89,7 +88,7 @@ class Settler:
         #Random chance of concent
         if rand.randrange(0,2) > 0.5:
             mate.origin = self.origin #Mate moves in :D
-            children_num = rand.randrange(1,4)
+            children_num = rand.randrange(0,2)
             for child in range(0, children_num):
                 self._mate(mate)
             self.steps_left = 0

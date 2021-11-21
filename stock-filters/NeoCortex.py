@@ -79,7 +79,7 @@ class NeoCortex:
                 dist = (s[0] - t[0], s[2] - t[2])
                 dist = (pow(dist[0], 2), pow(dist[1], 2))
                 dist = (int(sqrt(dist[0])), int(sqrt(dist[1])))
-                if dist[0] <= 10 and dist[1] <= 10:
+                if dist[0] <= 8 or dist[1] <= 8:
                         return False
         return True
     

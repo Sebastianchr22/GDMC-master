@@ -75,7 +75,7 @@ class Settler:
         #self.world_grid[self.origin].add_settler(self)
 
     def _get_step_dist(self, origin):
-        return int(rand.normalvariate(origin, 15))
+        return int(rand.normalvariate(origin, 10))
 
     def _build(self):
         build.build_temp_house(self.level, self.world_grid[self.origin])
@@ -88,7 +88,7 @@ class Settler:
         #Random chance of concent
         if rand.randrange(0,2) > 0.5:
             mate.origin = self.origin #Mate moves in :D
-            children_num = rand.randrange(0,2)
+            children_num = int(rand.normalvariate(1.5, 1)) #Exclusive range
             for child in range(0, children_num):
                 self._mate(mate)
             self.steps_left = 0

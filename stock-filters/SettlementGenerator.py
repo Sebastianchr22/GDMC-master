@@ -39,11 +39,11 @@ def perform(level, box, options):
             Builder.set_block_with_level(level, block[0], y, block[2], 0, 0)
 
     segment_grid = GridSeg.get_grid(largest_segment.get_content())
-    index = 0
-    for cube in segment_grid:
-        for block in cube.get_chunk():
-            Builder.set_block_with_level(level, block[0], block[1], block[2], 35, index % 15)
-        index+=1
+    #index = 0
+    #for cube in segment_grid:
+    #    for block in cube.get_chunk():
+    #        Builder.set_block_with_level(level, block[0], block[1], block[2], 35, index % 15)
+    #    index+=1
 
     #Simulation via settlers>
     settlemet = Settlement(10, 25, level, segment_grid)

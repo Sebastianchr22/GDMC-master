@@ -10,11 +10,10 @@ import random as rand
 #       While finding the optimal ways to do those tasks.
 
 class NeoCortex:
-    def __init__(self, settler, world_grid, origin):
+    def __init__(self, settler, world_grid):
         self.settler = settler
         self.decision_tree = self.settler._get_decisions()
         self.world_grid = world_grid
-        self.origin = origin
     
     def handle_impulse(self, impulse, weights):
         text = ""
@@ -54,9 +53,7 @@ class NeoCortex:
         return food
 
     def _go_build_shelter(self):
-        occupied = self.world_grid[self.settler.origin].get_segment_used()
-        distanced = self.can_build()
-        if distanced and not occupied:
+        if self.can_build():
             self.settler._build() #Action
             self.world_grid[self.settler.origin].use_segment() #Mental note
             self.settler.set_has_shelter()
@@ -67,23 +64,23 @@ class NeoCortex:
         pass
     
     def _go_mate(self):
-        print("Mating..")
+        self.settler._mate()
     
     def _go_find_mate(self):
-        pass
+        self.settler._move_to_other_settler()
 
     def can_build(self):
-        for segment in self.world_grid:
-            if segment.get_segment_used():
-                s = self.world_grid[self.origin].get_chunk()[0]
-                settlers_on_seg = segment.get_settlers()
-                for settler in settlers_on_seg:
-                    t = self.world_grid[settler.origin].get_chunk()[0]
-                    dist = (s[0] - t[0], s[2] - t[2])
-                    dist = (pow(dist[0], 2), pow(dist[1], 2))
-                    dist = (int(sqrt(dist[0])), int(sqrt(dist[1])))
-                    #print("Distance to other house = ", dist)
-                    if dist[0] <= 5 and dist[1] <= 5:
+        s = self.world_grid[self.settler.origin].get_chunk()[0]
+        if self.world_grid[self.settler.origin].get_segment_used():
+            return False
+        for settler in self.settler.settlement.get_all_settlers():
+            if settler._get_has_shelter():
+                t = self.world_grid[settler.origin].get_chunk()[0]
+                dist = (s[0] - t[0], s[2] - t[2])
+                dist = (pow(dist[0], 2), pow(dist[1], 2))
+                dist = (int(sqrt(dist[0])), int(sqrt(dist[1])))
+                print "Distance to other home: ", dist
+                if dist[0] <= 10 and dist[1] <= 10:
                         return False
         return True
     

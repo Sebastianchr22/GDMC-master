@@ -13,10 +13,10 @@ import Builder as build
 ####To implement: All world grids must contains all its blocks, and all settlers upon the cell.
 
 class Settler:
-    def __init__(self, level, world_grid, origin):
+    def __init__(self, level, world_grid, origin, settlement, steps):
         self.decisions = Decisions()
         self.system1 = PrefrontalCortex(self)
-        self.system2 = NeoCortex(self, world_grid, origin)
+        self.system2 = NeoCortex(self, world_grid)
         self.level = level
         self.world_grid = world_grid
         self.origin = origin
@@ -24,6 +24,8 @@ class Settler:
         self.food = 1
         self.has_mate = False
         self.children = 0
+        self.settlement = settlement
+        self.steps_left = steps
 
     def step(self):
         impulse, weights = self.system1.get_impulse()
@@ -61,12 +63,11 @@ class Settler:
         self.world_grid[self.origin].remove_settler(self)
         point = self.world_grid[self.origin].get_chunk()[0]
         loc = (self._get_step_dist(point[0]), self._get_step_dist(point[2]))
-        print("Moved with a step size of ", loc, " from point ", point)
-        print(loc)
         for seg in self.world_grid:
             c = seg.get_chunk()
             for block in c:
                 if block[0] == loc[0] and block[2] == loc[1]:
+                    print "Moved from ", self.origin, " to ", self.world_grid.index(seg)
                     self.origin = self.world_grid.index(seg)
                     seg.add_settler(self)
                     break
@@ -75,11 +76,24 @@ class Settler:
         #self.world_grid[self.origin].add_settler(self)
 
     def _get_step_dist(self, origin):
-        return int(rand.normalvariate(origin, 25))
+        return int(rand.normalvariate(origin, 15))
 
     def _build(self):
         build.build_temp_house(self.level, self.world_grid[self.origin])
 
-    
+    def _mate(self, mate):
+        self.settlement.new_child(self, mate)
+
+    def _move_to_other_settler(self):
+        mate = self.settlement.get_random_settler()
+        #Random chance of concent
+        if rand.randrange(0,2) > 0.5:
+            mate.origin = self.origin #Mate moves in :D
+            children_num = rand.randrange(1,4)
+            for child in range(0, children_num):
+                self._mate(mate)
+            self.steps_left = 0
+            mate.steps_left = 0
+            print("Mating complete, created ", children_num, " children")
 
 

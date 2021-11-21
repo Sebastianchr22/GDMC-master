@@ -9,7 +9,7 @@ import RoadHandler #For all functions related to the road, generation, sideshoot
 import Builder
 import ImperfectSpaceSegmenter as ISSeg
 import SquareSegmenter as GridSeg
-from Settler import Settler
+from Settlement import Settlement
 
 floor_blocks = []
 
@@ -46,16 +46,9 @@ def perform(level, box, options):
         index+=1
 
     #Simulation via settlers>
-
-    n = 10
-    settlers = [None] * n
-    for i in range(0, n):
-        settlers[i] = Settler(level, segment_grid, int(len(segment_grid) / 2))
-    
-    steps = 30
-    for step in range(0, steps):
-        for settler in settlers:
-            settler.step()
+    settlemet = Settlement(10, 25, level, segment_grid)
+    for i in range(0, 50):
+        settlemet.step()
 
     #for settler in settlers:
     #    settler._get_decisions().print_decisions()

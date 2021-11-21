@@ -27,7 +27,10 @@ def set_block_with_level(level, x, y, z, blockID, blockIDLevel):
 
 
 def build_temp_house(level, origin):
-    bp = TempHouse.get_blueprint()
+    th = TempHouse()
+    bp = th.get_blueprint()
+    origin = origin.get_chunk()
+    origin = origin[0]
     for y in range(0, len(bp)):
         for x in range(0, len(bp[y])):
             for z in range(0, len(bp[y][x])):
@@ -42,36 +45,5 @@ def build_support_from(level, inity, structure_location):
             set_block_with_level(level, loc[0], inity - height, loc[1], cobblestone, 0)
             height += 1
 
-
-
-
-#Getters for building materials:
-def get_road_block_id():
-    return cobblestone
-
 def get_floor_block_id():
     return wool_floor
-
-def get_water_block_id():
-    return water_block
-
-def get_white_wool_block_id():
-    return white_wool
-
-def get_oak_fence_block_id():
-    return oak_fence
-
-def get_bed_block_id():
-    return red_bed
-
-def get_cake_block_id():
-    return cake
-
-def get_furnace_block_id():
-    return furnace
-
-def get_oak_wood_block_id():
-    return oak_wood_plants
-
-def get_glass_block_id():
-    return glass_block

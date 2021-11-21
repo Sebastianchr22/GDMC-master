@@ -1,5 +1,5 @@
-block = 22
-empty = 0
+block = (22,0)
+empty = (0,0)
 
 class TempHouse: #inheritance
     blueprint = [

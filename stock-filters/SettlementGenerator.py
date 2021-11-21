@@ -9,6 +9,7 @@ import RoadHandler #For all functions related to the road, generation, sideshoot
 import Builder
 import ImperfectSpaceSegmenter as ISSeg
 import SquareSegmenter as GridSeg
+from Settler import Settler
 
 floor_blocks = []
 
@@ -36,28 +37,6 @@ def perform(level, box, options):
     for block in largest_segment.get_content():
         for y in range(block[1] +1, box.maxy):
             Builder.set_block_with_level(level, block[0], y, block[2], 0, 0)
-    
-
-    #index = 0
-    #for segment in segments_root.get_children():
-    #    for block in segment.get_content():
-    #        Builder.set_block_with_level(level, block[0], block[1], block[2], 35, index % 15)
-    #    index += 1
-    #Creating road within the largest segment of the partitioned space 
-    #road_origin = RoadHandler.find_road_point(level, largest_segment.get_content(), (0, len(largest_segment.get_content()) / 10))
-    #FloorHandler.mark_road_origin(level, road_origin)
-
-    #road_end = RoadHandler.find_road_point(level, largest_segment.get_content(), (len(largest_segment.get_content()) - (len(largest_segment.get_content()) / 10), len(largest_segment.get_content())))
-    #FloorHandler.mark_road_end(level, road_end)
-
-    #road_blocks = RoadHandler.build_road_astar(level, road_origin, road_end, largest_segment.get_content())
-    #road_blocks = RoadHandler.pave_road(level, road_blocks)
-    
-    #for x in range(0,10):
-    #    floor_without_road = FloorHandler.get_floor_without_roads(level, largest_segment.get_content())
-    #    road_blocks += RoadHandler.create_road_branch(level, road_blocks, largest_segment.get_content())
-    #floor_without_road = FloorHandler.get_floor_without_roads(level, largest_segment.get_content())
-    
 
     segment_grid = GridSeg.get_grid(largest_segment.get_content())
     index = 0
@@ -66,14 +45,20 @@ def perform(level, box, options):
             Builder.set_block_with_level(level, block[0], block[1], block[2], 35, index % 15)
         index+=1
 
-    #Build houses are return all blocks not containing a house
-    #Builder.place_houses(level, road_blocks, floor_without_road)
+    #Simulation via settlers>
 
+    n = 10
+    settlers = [None] * n
+    for i in range(0, n):
+        settlers[i] = Settler(level, segment_grid, int(len(segment_grid) / 2))
     
-            
-    
-    #Builder.build_farm_land(level, floor_blocks)
-    #FloorHandler.mark_floor_blocks(level, floor_without_road)
+    steps = 30
+    for step in range(0, steps):
+        for settler in settlers:
+            settler.step()
+
+    #for settler in settlers:
+    #    settler._get_decisions().print_decisions()
 
     elapsed_time = time.time() - initial_time
     print "PERFORMANCE: total settlement generation time        ", elapsed_time, " seconds"

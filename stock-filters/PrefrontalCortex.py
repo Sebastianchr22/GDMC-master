@@ -35,6 +35,7 @@ class PrefrontalCortex:
         if self.settler._get_hunger() >= 0.7:
             impulses[0] = 1
 
+        #print("Impulses: ", impulses)
         return impulses
 
     def get_highest_weighed_impulse(self, weights : dict) -> int:

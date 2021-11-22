@@ -20,7 +20,8 @@ class Settlement:
         step_text = "Simulation step with ", len(self.settlers), " settlers alive"
         self.settlement_print(step_text)
         for settler in self.settlers:
-            settler.step()
+            if settler.steps_left > 0:
+                settler.step()
     
     def create_new_settler(self):
         self.settlers.append(

@@ -2,7 +2,6 @@ from pymclevel import alphaMaterials, MCSchematic, MCLevel, BoundingBox
 from mcplatform import *
 import numpy as np
 import random as rand
-from CubeHouse import CubeHouse
 from TempHouse import TempHouse
 
 wool_floor          = 171
@@ -19,12 +18,13 @@ cake                = 92
 walkable_blocks = [1, 2, 3, 5, 12, 13]
 directions = {0: "North", 1: "East", 2: "South", 3: "West"}
 
+road_blocks = [(2,0), (98,1), (13,0), (98,2), (4,0), (44,3), (44,5), (3,2), (3,0)]
+
 #Sets block with level (i.e 171:3 for light blue wool carpet)
 def set_block_with_level(level, x, y, z, blockID, blockIDLevel):
     if blockID != -1:
         level.setBlockAt(x, y, z, blockID)
         level.setBlockDataAt(x, y, z, blockIDLevel)
-
 
 def build_temp_house(level, origin):
     th = TempHouse()
@@ -47,3 +47,6 @@ def build_support_from(level, inity, structure_location):
 
 def get_floor_block_id():
     return wool_floor
+
+def get_road_block_id():
+    return road_blocks[int(rand.normalvariate(4, 2)) % len(road_blocks)]

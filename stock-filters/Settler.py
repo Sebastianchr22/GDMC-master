@@ -28,8 +28,11 @@ class Settler:
         self.steps_left = steps
 
     def step(self):
+        if self.steps_left <= 0:
+            self.settlement.remove_settler(self)
         impulse, weights = self.system1.get_impulse()
         self.system2.handle_impulse(impulse, weights)
+        self.steps_left -= 1
 
     #Hunger is proportionally small compared to the supply of food available to the settler
     def _get_hunger(self):
@@ -59,23 +62,10 @@ class Settler:
     def _get_decisions(self):
         return self.decisions
 
-    def _move(self):
+    def _move(self, to_index):
         self.world_grid[self.origin].remove_settler(self)
-        point = self.world_grid[self.origin].get_chunk()[0]
-        loc = (self._get_step_dist(point[0]), self._get_step_dist(point[2]))
-        for seg in self.world_grid:
-            c = seg.get_chunk()
-            for block in c:
-                if block[0] == loc[0] and block[2] == loc[1]:
-                    self.origin = self.world_grid.index(seg)
-                    seg.add_settler(self)
-                    break
-
-        #self.origin = (self.origin + int(loc)) % len(self.world_grid)
-        #self.world_grid[self.origin].add_settler(self)
-
-    def _get_step_dist(self, origin):
-        return int(rand.normalvariate(origin, 10))
+        self.origin = to_index
+        self.world_grid[to_index].add_settler(self)
 
     def _build(self):
         build.build_temp_house(self.level, self.world_grid[self.origin])
@@ -91,8 +81,6 @@ class Settler:
             children_num = abs(int(rand.normalvariate(2, 1))) #Exclusive range
             for child in range(0, children_num):
                 self._mate(mate)
-            self.steps_left = 0
-            mate.steps_left = 0
-            print("Mating complete, created ", children_num, " children")
-
+            self.settlement.remove_settler(self)
+            self.settlement.remove_settler(mate)
 

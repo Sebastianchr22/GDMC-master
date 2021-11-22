@@ -46,9 +46,12 @@ def perform(level, box, options):
     #    index+=1
 
     #Simulation via settlers>
-    settlemet = Settlement(10, 25, level, segment_grid)
-    for i in range(0, 50):
+    
+    settlement_time = time.time()
+    settlemet = Settlement(10, 25, level, segment_grid, floor_blocks)
+    while len(settlemet.settlers) > 0:
         settlemet.step()
+    print "PERFORMANCE: Settlement simulation took ", time.time() - settlement_time, " seconds"
 
     #for settler in settlers:
     #    settler._get_decisions().print_decisions()

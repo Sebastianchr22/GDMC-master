@@ -45,7 +45,7 @@ def get_grid(floor_blocks):
 
     #For performance evaluation:
     elapsed_time = time.time() - initial_time
-    print "PERFORMANCE: Finding grid cells of size", blocks_in_chunk, " took ", elapsed_time, " seconds"
+    print "PERFORMANCE: grid segmentation took ", elapsed_time, " seconds"
 
     return grid
 

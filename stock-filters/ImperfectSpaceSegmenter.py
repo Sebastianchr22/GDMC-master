@@ -48,7 +48,7 @@ def get_segments(floor_without_road):
         root.add_child(SegmentNode(root, neighbouring_blocks)) #No more open blocks for the segment
 
     elapsed_time = time.time() - initial_time
-    print "PERFORMANCE: total segmentation time        ", elapsed_time, " seconds"
+    print "PERFORMANCE: Imperfect space segmentation time        ", elapsed_time, " seconds"
     
     return root
 

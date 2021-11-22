@@ -27,15 +27,12 @@ def create_road_branch(level, path, floor_blocks):
 #Places road path blocks along the given road path
 def pave_road(level, path):
     new_road = []
-    initial_time = time.time()
     for block in path:
         for step in road_steps:
             new_road.append((block[0] + step[0], block[1], block[2] + step[1]))
-            Builder.set_block_with_level(level, block[0] + step[0], block[1], block[2] + step[1], Builder.get_road_block_id(), 0)
-    ###For performance evaluation:
+            road_block = Builder.get_road_block_id()
+            Builder.set_block_with_level(level, block[0] + step[0], block[1], block[2] + step[1], road_block[0], road_block[1])
     return new_road
-    elapsed_time = time.time() - initial_time
-    print "PERFORMANCE: Paving road took                        ", elapsed_time, " seconds"
 
 #Finds a random point along the road
 def find_road_point(level, floor_blocks, range):
@@ -127,4 +124,7 @@ def get_lowest_f(open_nodes):
     return lowest
 
 def get_walkable_blocks():
-    return walkable_blocks
+    b = walkable_blocks[:]
+    for block in Builder.get_floor_block_id():
+        b.append(block[0])
+    return b 

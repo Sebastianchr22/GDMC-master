@@ -111,7 +111,7 @@ class NeoCortex:
         return self.get_index_of(new_point, self.xz_grid)
     
     def get_step_size(self, loc):
-        d = 10 #One chunk per step
+        d = 5 #One chunk per step
         return int(rand.normalvariate(loc, d))
     
     def point_in_grid(self, point, grid):

@@ -6,7 +6,7 @@ import time
 import Builder
 
 floor_blocks = []
-walkable_blocks = [1, 2, 3, 5, 12, 13]
+walkable_blocks = [1, 2, 3, 4, 5, 12, 13, 24, 48, 78, 79, 80, 98, 159, 172, 179, ]
 plants = [6, 31, 32, 37, 38, 39, 40, 175]
 
 wool_floor = Builder.get_floor_block_id()

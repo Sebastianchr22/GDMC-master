@@ -28,8 +28,6 @@ class Settler:
         self.steps_left = steps
 
     def step(self):
-        if self.steps_left <= 0:
-            self.settlement.remove_settler(self)
         impulse, weights = self.system1.get_impulse()
         self.system2.handle_impulse(impulse, weights)
         self.steps_left -= 1

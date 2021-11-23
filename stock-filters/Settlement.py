@@ -22,6 +22,8 @@ class Settlement:
         for settler in self.settlers:
             if settler.steps_left > 0:
                 settler.step()
+            else:
+                self.remove_settler(settler)
     
     def create_new_settler(self):
         self.settlers.append(

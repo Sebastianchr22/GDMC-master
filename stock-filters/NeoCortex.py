@@ -48,7 +48,7 @@ class NeoCortex:
             else:
                 self._go_find_mate()
             text = "Went to mate"
-
+        #print "SETTLER: ", text
         decision = Decision(text, impulse, weights)
         self.decision_tree.new_decision(decision)
 

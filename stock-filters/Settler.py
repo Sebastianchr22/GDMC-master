@@ -71,14 +71,29 @@ class Settler:
     def _mate(self, mate):
         self.settlement.new_child(self, mate)
 
+    def get_random_mate(self):
+        suitable = []
+        mate = None
+
+        for settler in self.settlement.get_all_settlers():
+            if settler._get_has_shelter():
+                suitable.append(settler)
+
+        if len(suitable <= 0):
+            return False, mate
+        else:
+            return True, mate
+
     def _move_to_other_settler(self):
-        mate = self.settlement.get_random_settler()
+        success, mates = self.get_random_mate()
         #Random chance of concent
-        if rand.randrange(0,2) > 0.5:
-            mate.origin = self.origin #Mate moves in :D
-            children_num = abs(int(rand.normalvariate(2, 1))) #Exclusive range
-            for child in range(0, children_num):
-                self._mate(mate)
-            self.settlement.remove_settler(self)
-            self.settlement.remove_settler(mate)
+        if success:
+            for mate in mates:
+                if rand.randrange(0,2) > 0.5:
+                    mate.origin = self.origin #Mate moves in :D
+                    children_num = abs(int(rand.normalvariate(1.8, 1.2))) #Exclusive range
+                    for child in range(0, children_num):
+                        self._mate(mate)
+                    self.settlement.remove_settler(self)
+                    self.settlement.remove_settler(mate)
 

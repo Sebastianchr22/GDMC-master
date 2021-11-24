@@ -26,11 +26,13 @@ class Decisions:
                 return dec
             dec = dec.get_next_decision()
 
-    def print_decisions(self):
+    def get_decisions_text(self):
         t = ""
         dec = self.root
         while dec != None:
-            text = t + dec.get_text() + " -> "
-            t = text
+            text = t + dec.get_text()
             dec = dec.get_next_decision()
-        print(text)
+            if dec != None:
+                text = text + " -> "
+            t = text
+        return text

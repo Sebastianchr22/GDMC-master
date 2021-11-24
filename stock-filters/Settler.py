@@ -73,16 +73,14 @@ class Settler:
 
     def get_random_mate(self):
         suitable = []
-        mate = None
-
         for settler in self.settlement.get_all_settlers():
             if settler._get_has_shelter():
                 suitable.append(settler)
 
-        if len(suitable <= 0):
-            return False, mate
+        if len(suitable) <= 0:
+            return False, suitable
         else:
-            return True, mate
+            return True, suitable
 
     def _move_to_other_settler(self):
         success, mates = self.get_random_mate()

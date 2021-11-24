@@ -49,6 +49,10 @@ class Settlement:
         if settler in self.settlers:
             self.settlers.remove(settler)
             self.settlement_print("Settler has lived out their life.")
+            self.print_settler_decisions(settler)
+
+    def print_settler_decisions(self, settler):
+        print settler._get_decisions().get_decisions_text()
 
     def settlement_print(self, text):
         print "SETTLEMENT: ", text

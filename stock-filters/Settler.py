@@ -3,9 +3,11 @@
 #       - The prefrontal cortex (impulsive, and controlling in order to achieve personal goals) also called 'system 1'
 #       - The neo-cortex (thoughtful, decision making part) also called 'system 2'
 
+from math import ceil, sqrt
 from NeoCortex import NeoCortex
 from PrefrontalCortex import PrefrontalCortex
 from Decisions import Decisions
+from Decision import Decision
 import random as rand
 import Builder as build
 
@@ -26,6 +28,9 @@ class Settler:
         self.children = 0
         self.settlement = settlement
         self.steps_left = steps
+
+        self.fertility = rand.normalvariate(1.5, 0.5) #example result: 1.4
+        self.fertility_sd = rand.normalvariate(0.5, 0.25)
 
     def step(self):
         impulse, weights = self.system1.get_impulse()
@@ -69,29 +74,18 @@ class Settler:
         build.build_temp_house(self.level, self.world_grid[self.origin])
 
     def _mate(self, mate):
-        self.settlement.new_child(self, mate)
+        self.settlement.new_child(self, mate)    
 
-    def get_random_mate(self):
-        suitable = []
-        for settler in self.settlement.get_all_settlers():
-            if settler._get_has_shelter():
-                suitable.append(settler)
-
-        if len(suitable) <= 0:
-            return False, suitable
-        else:
-            return True, suitable
-
-    def _move_to_other_settler(self):
-        success, mates = self.get_random_mate()
+    def _find_and_mate(self, mates):
         #Random chance of concent
-        if success:
-            for mate in mates:
-                if rand.randrange(0,2) > 0.5:
-                    mate.origin = self.origin #Mate moves in :D
-                    children_num = abs(int(rand.normalvariate(1.8, 1.2))) #Exclusive range
-                    for child in range(0, children_num):
-                        self._mate(mate)
-                    self.settlement.remove_settler(self)
-                    self.settlement.remove_settler(mate)
+        for mate in mates:
+            if rand.randrange(0,101) / 100 >= 1/sqrt(self.settlement.get_size_of_settlement()) * 2:
+                mate.origin = self.origin #Mate moves in :D
+                children_num = rand.normalvariate(self.fertility, self.fertility_sd) #Exclusive range
+                for child in range(0, int(children_num)):
+                    self._mate(mate)
+                self.steps_left = 0
+                mate.steps_left = 0
+                return True, int(children_num)
+        return False, 0
 

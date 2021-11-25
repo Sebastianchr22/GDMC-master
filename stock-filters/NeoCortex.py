@@ -44,9 +44,9 @@ class NeoCortex:
         elif impulse.name == Impulse.WANT_CHILDREN.name:
             if self.settler._get_has_mate():
                 self._go_mate()
+                text = "Went to mate"
             else:
-                self._go_find_mate()
-            text = "Went to mate"
+                text = self._go_find_mate()
         #print "SETTLER: ", text
         decision = Decision(text, impulse, weights)
         self.decision_tree.new_decision(decision)
@@ -62,15 +62,12 @@ class NeoCortex:
         return food
 
     def _go_build_shelter(self):
-        if self.can_build():
-            self.settler.settlement.settler_claims_index(self.settler.origin)
-            self.settler._build() #Action
-            self.world_grid[self.settler.origin].use_segment() #Mental note
-            self.settler.set_has_shelter()
-            return "Succesfully built a shelter"
-        else: #Either too close to another house, or already occupied
-            self.settler._move(self.find_free_grid_cell()) #Action
-            return "Went to build shelter, but cell was occupied or too close to other shelter"
+        self.move_to_suitable_plot()
+        self.settler.settlement.settler_claims_index(self.settler.origin)
+        self.settler._build() #Action
+        self.world_grid[self.settler.origin].use_segment() #Mental note
+        self.settler.set_has_shelter()
+        return "Succesfully built a shelter"
 
     def _go_sleep(self):
         pass
@@ -79,9 +76,19 @@ class NeoCortex:
         self.settler._mate()
     
     def _go_find_mate(self):
-        self.settler._move_to_other_settler()
+        success, mates = self.get_suitable_mates()
+        if success:
+            mated, num_kids = self.settler._find_and_mate(mates)
+            text = ""
+            if mated:
+                text =  "Had " + str(num_kids) + " children"
+            else:
+                text = "Got no consent from suitable mates"
+            return text
+        else:
+            return "Failed to find suitable mates"
 
-    def can_build(self):
+    def old_can_build(self):
         s = self.world_grid[self.settler.origin].get_chunk()[0]
         dist = 0
         if self.settler.settlement.get_index_claimed(self.settler.origin):
@@ -91,10 +98,34 @@ class NeoCortex:
             dist = (s[0] - t[0], s[2] - t[2])
             dist = (pow(dist[0], 2), pow(dist[1], 2))
             dist = (int(sqrt(dist[0])), int(sqrt(dist[1])))
-            if dist[0] <= 10 and dist[1] <= 10:
+            if dist[0] <= 5 and dist[1] <= 5:
                     return False
         return True
     
+    def move_to_suitable_plot(self):
+        close_shelters = self.get_close_houses()
+        if len(close_shelters) > 0:
+            self_loc = self.world_grid[self.settler.origin].get_chunk()[0]
+            average_loc = (self_loc[0], self_loc[2])
+            for shelter_loc in close_shelters:
+                average_loc += (-(shelter_loc[0] - self_loc[0]), -(shelter_loc[2] - self_loc[2]))
+            self.settler._move(self.get_index_of(average_loc, self.xz_grid))
+
+    min_shelter_dist = 5
+    def get_close_houses(self):
+        s = self.world_grid[self.settler.origin].get_chunk()[0]
+        close_shelters_locs = []
+        for house_index in self.settler.settlement.get_all_shelter_indexes():
+            t = self.world_grid[house_index].get_chunk()[0]
+            dist = (s[0] - t[0], s[2] - t[2])
+            dist = (pow(dist[0], 2), pow(dist[1], 2))
+            dist = (int(sqrt(dist[0])), int(sqrt(dist[1])))
+            if dist[0] <= self.min_shelter_dist and dist[1] <= self.min_shelter_dist:
+                close_shelters_locs.append(t)
+        if self.settler.settlement.get_index_claimed(self.settler.origin):
+            close_shelters_locs.append(s)
+        return close_shelters_locs
+
     def find_free_grid_cell(self):
         point = self.world_grid[self.settler.origin].get_chunk()[0] #Initial and fallback (no move)
         attempts = 0
@@ -126,3 +157,21 @@ class NeoCortex:
             if point in cell:
                 return grid.index(cell)
         return 0
+
+
+    def get_index_of_3d(self, point, grid):
+        for cell in grid:
+            if point in cell.get_chunk():
+                return grid.index(cell)
+        return self.find_free_grid_cell()
+
+    def get_suitable_mates(self):
+        suitable = []
+        for settler in self.settler.settlement.get_all_settlers():
+            if settler._get_has_shelter():
+                suitable.append(settler)
+
+        if len(suitable) <= 0:
+            return False, suitable
+        else:
+            return True, suitable

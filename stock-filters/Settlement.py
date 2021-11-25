@@ -17,8 +17,8 @@ class Settlement:
             self.create_new_settler()
 
     def step(self):
-        step_text = "Simulation step with ", len(self.settlers), " settlers alive"
-        self.settlement_print(step_text)
+        #step_text = "Simulation step with ", len(self.settlers), " settlers alive"
+        #self.settlement_print(step_text)
         for settler in self.settlers:
             if settler.steps_left > 0:
                 settler.step()
@@ -26,8 +26,10 @@ class Settlement:
                 self.remove_settler(settler)
     
     def create_new_settler(self):
+        grid_len = int(len(self.world_grid) / 2)
+        loc = int(rand.normalvariate(grid_len, 7))
         self.settlers.append(
-            Settler(self.level, self.world_grid, int(len(self.world_grid) / 2), self, self.settler_steps)
+            Settler(self.level, self.world_grid, loc, self, self.settler_steps)
         )
 
     def get_settlement_level(self):
@@ -40,16 +42,18 @@ class Settlement:
         self.settlers.append(
             Settler(self.level, self.world_grid, of_settler1.origin, self, self.settler_steps)
         )
-        self.settlement_print("A new settlers has been born")
+        #self.settlement_print("A new settlers has been born")
 
     def get_all_settlers(self):
         return self.settlers
 
+    def get_size_of_settlement(self):
+        return len(self.settlers)
+
     def remove_settler(self, settler):
-        if settler in self.settlers:
-            self.settlers.remove(settler)
-            self.settlement_print("Settler has lived out their life.")
-            self.print_settler_decisions(settler)
+        self.settlers.remove(settler)
+        #self.settlement_print("Settler has lived out their life.")
+        self.print_settler_decisions(settler)
 
     def print_settler_decisions(self, settler):
         print settler._get_decisions().get_decisions_text()

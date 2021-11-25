@@ -111,7 +111,7 @@ class NeoCortex:
                 average_loc += (-(shelter_loc[0] - self_loc[0]), -(shelter_loc[2] - self_loc[2]))
             self.settler._move(self.get_index_of(average_loc, self.xz_grid))
 
-    min_shelter_dist = 5
+    min_shelter_dist = 10
     def get_close_houses(self):
         s = self.world_grid[self.settler.origin].get_chunk()[0]
         close_shelters_locs = []

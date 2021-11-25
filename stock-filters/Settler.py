@@ -29,8 +29,8 @@ class Settler:
         self.settlement = settlement
         self.steps_left = steps
 
-        self.fertility = rand.normalvariate(1.5, 0.5) #example result: 1.4
-        self.fertility_sd = rand.normalvariate(0.5, 0.25)
+        self.fertility = rand.normalvariate(1.9, 0.5)
+        self.fertility_sd = rand.normalvariate(0.8, 0.25)
 
     def step(self):
         impulse, weights = self.system1.get_impulse()
@@ -79,7 +79,7 @@ class Settler:
     def _find_and_mate(self, mates):
         #Random chance of concent
         for mate in mates:
-            if rand.randrange(0,101) / 100 >= 1/sqrt(self.settlement.get_size_of_settlement()) * 2:
+            if rand.randrange(0,2)>= 1:
                 mate.origin = self.origin #Mate moves in :D
                 children_num = rand.normalvariate(self.fertility, self.fertility_sd) #Exclusive range
                 for child in range(0, int(children_num)):

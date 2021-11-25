@@ -28,9 +28,8 @@ class Settlement:
     def create_new_settler(self):
         grid_len = int(len(self.world_grid) / 2)
         loc = int(rand.normalvariate(grid_len, 7))
-        steps = int(self.settler_steps * 0.25)
         self.settlers.append(
-            Settler(self.level, self.world_grid, loc, self, steps)
+            Settler(self.level, self.world_grid, loc, self, self.settler_steps   )
         )
 
     def get_settlement_level(self):
@@ -41,7 +40,7 @@ class Settlement:
 
     def new_child(self, of_settler1, of_settler2):
         self.settlers.append(
-            Settler(self.level, self.world_grid, of_settler1.origin, self, self.settler_steps)
+            Settler(self.level, self.world_grid, of_settler1.origin, self, int(of_settler1.initial_steps * 0.75))
         )
         #self.settlement_print("A new settlers has been born")
 

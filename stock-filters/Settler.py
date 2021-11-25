@@ -28,6 +28,7 @@ class Settler:
         self.children = 0
         self.settlement = settlement
         self.steps_left = steps
+        self.initial_steps = steps
 
         self.fertility = rand.normalvariate(1.9, 0.5)
         self.fertility_sd = rand.normalvariate(0.8, 0.25)

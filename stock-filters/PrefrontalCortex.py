@@ -22,14 +22,14 @@ class PrefrontalCortex:
         impulses = {0: self.settler._get_hunger(), 1:0, 2:0, 3:0}
         impulses[2] = 0.03
 
+        #Impulse to build a house:
+        if self.settler._get_hunger() <= 0.7 and not self.settler._get_has_shelter():
+            impulses[2] = 1 - (self.settler._get_hunger() / 3)
+        
         #Impulse to mate
         if self.settler._get_hunger() <= 0.5 and self.settler._get_has_shelter():
             #Having children becomes a priority when basic needs are met
             impulses[3] = 2 / (self.settler._get_children_num() + 1) #Avoid division by zero
-        
-        #Impulse to build a house:
-        if self.settler._get_hunger() <= 0.7 and not self.settler._get_has_shelter():
-            impulses[2] = 1 - self.settler._get_hunger()
         
         #Impulse to eat
         if self.settler._get_hunger() >= 0.7:

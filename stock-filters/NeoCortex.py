@@ -35,8 +35,7 @@ class NeoCortex:
                 text = "Went to hunt, and found nothing.."
         
         elif impulse.name == Impulse.WANT_SHELTER.name:
-            self._go_build_shelter()
-            text = "Went to build a shelter"
+            text = self._go_build_shelter()
         
         elif impulse.name == Impulse.WANT_SLEEP.name:
             self._go_sleep()
@@ -68,8 +67,10 @@ class NeoCortex:
             self.settler._build() #Action
             self.world_grid[self.settler.origin].use_segment() #Mental note
             self.settler.set_has_shelter()
+            return "Succesfully built a shelter"
         else: #Either too close to another house, or already occupied
             self.settler._move(self.find_free_grid_cell()) #Action
+            return "Went to build shelter, but cell was occupied or too close to other shelter"
 
     def _go_sleep(self):
         pass

@@ -67,7 +67,7 @@ class NeoCortex:
         self.settler._build() #Action
         self.world_grid[self.settler.origin].use_segment() #Mental note
         self.settler.set_has_shelter()
-        return "Succesfully built a shelter"
+        return "Successfully built a shelter"
 
     def _go_sleep(self):
         pass

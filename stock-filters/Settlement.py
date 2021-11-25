@@ -40,7 +40,7 @@ class Settlement:
 
     def new_child(self, of_settler1, of_settler2):
         self.settlers.append(
-            Settler(self.level, self.world_grid, of_settler1.origin, self, int(of_settler1.initial_steps * 0.75))
+            Settler(self.level, self.world_grid, of_settler1.origin, self, int(of_settler1.initial_steps * 0.9))
         )
         #self.settlement_print("A new settlers has been born")
 

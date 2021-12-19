@@ -16,7 +16,7 @@ This project applies a filter to execute settlement generation within the game w
 
 Simply:
         
-        copy/paste the content of the 'stock-filters' folder into your local folder of the same name within the GDMC folder 
+    copy/paste the content of the 'stock-filters' folder into your local folder of the same name within the GDMC folder 
 
 This folder is cloned in the 'Getting started' guide.
 

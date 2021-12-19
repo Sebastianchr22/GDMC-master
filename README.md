@@ -1,5 +1,8 @@
 # How to
-To run the settlement generator, follow that guide from the GDMC competition website: https://gendesignmc.wikidot.com/wiki:submission-mcedit
+To run the settlement generator, follow that guide from the GDMC competition website: 
+    
+    https://gendesignmc.wikidot.com/wiki:submission-mcedit
+
 Use the 'Getting started' guide to download Anacoda (set it up too) and install the dependencies.
 - I found that this works best on Windows.
 
@@ -11,7 +14,11 @@ Conda is simply a package manager for data science. Using the install guide from
 Filters are the term used by McEdit to describe Python code to execute in the simulated game environment.
 This project applies a filter to execute settlement generation within the game world (not in real time).
 
-Simply copy/paste the content of the 'stock-filters' folder into your local folder of the same name within the GDMC folder as cloned from the 'Getting started' guide.
+Simply:
+        
+        copy/paste the content of the 'stock-filters' folder into your local folder of the same name within the GDMC folder 
+
+This folder is cloned in the 'Getting started' guide.
 
 
 ## After installing Anaconda
@@ -27,7 +34,7 @@ The best advise is to look in the terminal to find the output from Conda, if any
 
     'conda install <dep>', or
     'pip install <dep>'
-
+    
 
 # Running the code
 To run the code make sure that all the filters (Python code from the zip) is pasted into the local folder

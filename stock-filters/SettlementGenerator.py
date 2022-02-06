@@ -34,9 +34,9 @@ def perform(level, box, options):
     print "Largest child segment found has a size of ", len(largest_segment.get_content()), " blocks"
 
     #Clear trees above:
-    for block in largest_segment.get_content():
-        for y in range(block[1] +1, box.maxy):
-            Builder.set_block_with_level(level, block[0], y, block[2], 0, 0)
+    #for block in largest_segment.get_content():
+    #    for y in range(block[1] +1, box.maxy):
+    #        Builder.set_block_with_level(level, block[0], y, block[2], 0, 0)
 
     segment_grid = GridSeg.get_grid(largest_segment.get_content())
     #index = 0

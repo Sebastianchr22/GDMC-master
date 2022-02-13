@@ -8,17 +8,7 @@ Use the 'Getting started' guide to download Anacoda (set it up too) and install 
 
 
 ## Anaconda
-Conda is simply a package manager for data science. Using the install guide from the GDMC competition website, you should have Coda installed with an environment for Python 2.7.
-
-## Using my 'Filters'
-Filters are the term used by McEdit to describe Python code to execute in the simulated game environment.
-This project applies a filter to execute settlement generation within the game world (not in real time).
-
-Simply:
-        
-    copy/paste the content of the 'stock-filters' folder into your local folder of the same name within the GDMC folder 
-
-This folder is cloned in the 'Getting started' guide.
+Conda is simply a package manager for data science. Using the install guide from the GDMC competition website, you should have Coda installed with an environment for Python 2.7. Follow the GDMC guide.
 
 
 ## After installing Anaconda
@@ -37,9 +27,7 @@ The best advise is to look in the terminal to find the output from Conda, if any
     
 
 # Running the code
-To run the code make sure that all the filters (Python code from the zip) is pasted into the local folder
-  
-    ~GDMC/stock-filters/
+Getting the code means to simply clone this repo, and 'cd' into it through the Anaconda terminal (only into GDMC-master folder)
     
 Then start mcedit using
     

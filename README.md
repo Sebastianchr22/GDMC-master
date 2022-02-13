@@ -25,6 +25,8 @@ The best advise is to look in the terminal to find the output from Conda, if any
     'conda install <dep>', or
     'pip install <dep>'
     
+Another common issue, is to attempt executing McEdit.py using Python 3. McEdit is only Python 2 compatible.
+    
 
 # Running the code
 Getting the code means to simply clone this repo, and 'cd' into it through the Anaconda terminal (only into GDMC-master folder)

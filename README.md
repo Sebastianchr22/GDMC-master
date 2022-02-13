@@ -1,3 +1,7 @@
+# Wiki
+See the wiki first, there you will find more information about the project, and the associated paper and survey results!
+
+
 # How to
 To run the settlement generator, follow that guide from the GDMC competition website: 
     
